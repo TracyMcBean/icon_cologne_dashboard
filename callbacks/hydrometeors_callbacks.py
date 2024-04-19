@@ -7,7 +7,7 @@ import numpy as np
 
 from .style_functions import style_figure
 
-def get_callbacks_hydrometeors(app):
+def get_callbacks_hydrometeors(app, config):
 
     @app.callback(Output(component_id='intermediate-ds-hydrometeors', component_property='data'),
                 Input(component_id='datepicker', component_property='date'),
@@ -18,7 +18,7 @@ def get_callbacks_hydrometeors(app):
         seldate = datetime.strptime(seldate, '%Y-%m-%d').strftime('%Y%m%d')
 
         ds = xr.open_dataset(
-            path+'/METEOGRAM_patch001_' + seldate + '_koeln.nc')
+            path+'/'+ config['paths']['prefix_meteogram'] + seldate + config['paths']['postfix_meteogram']+'.nc')
         # only get up to around 12 km height and every 6th time step to reduce data size for speedup
         ds_sub = ds[['QV', 'QC', 'QI', 'QR', 'QS', 'QG', 'QH']].isel(
                         height_2=slice(level_range[0],level_range[1]), 
@@ -45,22 +45,30 @@ def get_callbacks_hydrometeors(app):
         
         fig = go.Figure(data=
                 go.Contour(z=df['{}'.format(dropdown_value)], x=df['time'], y=df['height_2'],
-                    colorscale='jet'))
+                    colorscale='jet', coloraxis='coloraxis'))
         
         if dropdown_value != 'QV':  # Add a colon after the condition
             fig.update_traces(contours=dict(start=-8, end=-2, size=1)
                      )
-        #fig.update_layout(coloraxis_colorbar=dict(
-         #           tickvals=[-8, -6, -4, -2, 1],
-          #          ticktext=['10-8', '10-6' '10-4', '10-2', '10^0'],
-         #       ))
         # apply styling to the figure
         fig = style_figure(fig)
-
-        if dropdown_value == 'QC':
-            fig.update_layout(title='',
-                            xaxis_title='Time',
-                            yaxis_title=''
+        fig.update_layout(title='',
+                            xaxis_title='Time [UTC]',
+                            yaxis_title='Height [m]'
                             )
+        
+        if dropdown_value != 'QV':
+            fig.update_layout(
+                coloraxis_colorbar=dict(
+                    title='log10 [kg/kg]',
+                    ),
+                )
+        else:
+            fig.update_layout(
+                coloraxis_colorbar=dict(
+                    title='[kg/kg]',
+                    ),
+                )
+            
         return fig
 

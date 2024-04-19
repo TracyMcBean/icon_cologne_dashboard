@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 from .style_functions import style_figure
 
 # This wrapping function is to avoid circular imports
-def get_callbacks_vars1d(app):
+def get_callbacks_vars1d(app, config):
     @app.callback(Output(component_id='intermediate-ds-vars1d', component_property='data'),
                 Input(component_id='datepicker', component_property='date'),
                 Input(component_id='path', component_property='value'))
@@ -18,7 +18,7 @@ def get_callbacks_vars1d(app):
         seldate = datetime.strptime(seldate, '%Y-%m-%d').strftime('%Y%m%d')
         
         ds = xr.open_dataset(
-            path+'/METEOGRAM_patch001_' + seldate + '_koeln.nc')
+            path+'/'+ config['paths']['prefix_meteogram'] + seldate + config['paths']['postfix_meteogram']+'.nc')
         ds_sub2d = ds[['T2M', 'P_SFC', 'TQV', 'TQC', 'TQI']]
         df = ds_sub2d.to_pandas()
         df = df.reset_index(col_fill='time')

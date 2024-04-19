@@ -9,7 +9,7 @@ import numpy as np
 
 from .style_functions import style_figure
 
-def get_callbacks_precip(app):
+def get_callbacks_precip(app, config):
     @app.callback(Output(component_id='intermediate-ds-precip', component_property='data'),
               Input(component_id='datepicker', component_property='date'),
               Input(component_id='path', component_property='value'))
@@ -18,7 +18,7 @@ def get_callbacks_precip(app):
         seldate = datetime.strptime(seldate, '%Y-%m-%d').strftime('%Y%m%d')
 
         ds = xr.open_dataset(
-            path+'/METEOGRAM_patch001_' + seldate + '_koeln.nc')
+            path+'/'+ config['paths']['prefix_meteogram'] + seldate + config['paths']['postfix_meteogram']+'.nc')
 
         # Get precipitation as snow, rain and total precip
         ds_sub = ds[['RAIN_GSP', 'RAIN_CON', 'SNOW_GSP', 'SNOW_CON']]

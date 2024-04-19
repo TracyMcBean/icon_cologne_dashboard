@@ -45,13 +45,16 @@ app.layout = html.Div(id='parent', children=[
                              max_date_allowed=datetime.today(), 
                              style={'margin-left': '10px'}),
         html.P("Select level range: "),
-        dcc.RangeSlider(id='height_slider', min=30, max=150, step=1, value=[50,120],
+        html.Div(children=[
+            dcc.RangeSlider(id='height_slider', min=30, max=config['data.meteogram']['maxlev_idx'], 
+                        step=1, value=[50,config['data.meteogram']['maxlev_idx']],
                         marks=None,
                         tooltip={
                                 "placement": "bottom",
                                 "always_visible": True,
                                 },
                     ),
+            ], style={'width': '50%', 'margin-left': '10px'}),
                           # marks={[i: ' {}'.format(i) for i in range(30, 121, 10)]}),
         html.P("Path to data: ", style={'margin-left': '20px'}),
         # for development only use the path to the data on the server
@@ -106,6 +109,11 @@ app.layout = html.Div(id='parent', children=[
                         options=[
                             {'label': 'Cloud cover', 'value': 'CLC'},
                             {'label': 'Temperature', 'value': 'T'},
+                            {'label': 'Density', 'value': 'RHO'},
+                            {'label': 'Pressure', 'value': 'P'},
+                            {'label': 'Relative humidity', 'value': 'REL_HUM'},
+                            {'label': 'Horizontal wind U', 'value': 'U'},
+                            {'label': 'horizontal wind V', 'value': 'V'},
                         ],
                         value='CLC', style={ 'color': '#0077a1'}),
         dcc.Graph(id='timeheight_plot'),
@@ -141,10 +149,10 @@ app.layout = html.Div(id='parent', children=[
     dcc.Store(id='intermediate-ds-hydrometeors')
 ], style={'font-family': 'system-ui', 'background-color': bg_color, 'color': text_color})
 
-get_callbacks_vars1d(app)
-get_callbacks_precip(app)
-get_callbacks_timeheight(app)
-get_callbacks_hydrometeors(app)
+get_callbacks_vars1d(app, config)
+get_callbacks_precip(app, config)
+get_callbacks_timeheight(app, config)
+get_callbacks_hydrometeors(app, config)
 
 
 if __name__ == '__main__':
