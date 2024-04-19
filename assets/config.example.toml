@@ -1,0 +1,13 @@
+# This TOML file is used to contain the global configuration for the project.
+
+title = "ICON Dashboard"
+
+[paths]
+# The path to the directory containing the data files.
+data = "/path/to/data/"
+
+# general style settings for entire app
+[style]
+bg_color = '#005176' # color for the background of entire page
+divider_color = '#ea564f' # dividers between rows
+text_color = 'white'    # text color for the entire page
