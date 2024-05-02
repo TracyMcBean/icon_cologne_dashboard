@@ -19,8 +19,8 @@ def get_callbacks_vars1d(app, config):
         
         ds = xr.open_dataset(
             path+'/'+ config['paths']['prefix_meteogram'] + seldate + config['paths']['postfix_meteogram']+'.nc')
-        ds_sub2d = ds[['T2M', 'P_SFC', 'TQV', 'TQC', 'TQI']]
-        df = ds_sub2d.to_pandas()
+        ds_sub1d = ds[['T2M', 'P_SFC', 'TQV', 'TQC', 'TQI']]
+        df = ds_sub1d.to_dataframe()
         df = df.reset_index(col_fill='time')
         # The data set must be converted to json so that it is stored as binary to be used in other functions
         return df.to_json(date_format='iso', orient='split')
