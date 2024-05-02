@@ -21,6 +21,7 @@ def get_callbacks_precip(app, config):
             path+'/'+ config['paths']['prefix_meteogram'] + seldate + config['paths']['postfix_meteogram']+'.nc')
 
         # Get precipitation as snow, rain and total precip
+        # TODO: Here the error handling is missing, if the variables are not in the dataset
         ds_sub = ds[['RAIN_GSP', 'RAIN_CON', 'SNOW_GSP', 'SNOW_CON']]
         ds_sub['SNOW'] = ds_sub.SNOW_GSP + ds_sub.SNOW_CON
         ds_sub['RAIN'] = ds_sub.RAIN_GSP + ds_sub.RAIN_CON

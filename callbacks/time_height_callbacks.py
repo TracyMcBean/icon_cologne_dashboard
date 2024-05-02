@@ -4,7 +4,8 @@ import plotly.graph_objects as go
 from dash.dependencies import Input, Output
 from datetime import datetime
 
-from .style_functions import style_figure
+from .style_functions import style_figure, style_error
+from utils.error_utils import var_exists
 
 def get_callbacks_timeheight(app, config):
 
@@ -19,8 +20,11 @@ def get_callbacks_timeheight(app, config):
         ds = xr.open_dataset(
             path+'/'+ config['paths']['prefix_meteogram'] + seldate + config['paths']['postfix_meteogram']+'.nc')
         # only get up to around 12 km height and every 6th time step to reduce data size for speedup
-        ds_sub = ds[['CLC', 'T', 'RHO', 'P', 'REL_HUM',
-                     'U', 'V']].isel(height_2=slice(level_range[0], level_range[1]), time=slice(0, len(ds.time), 6))
+
+        var_list = ['CLC', 'T', 'RHO', 'P', 'REL_HUM','U', 'V']
+        var_list = var_exists(var_list, ds)
+
+        ds_sub = ds[var_list].isel(height_2=slice(level_range[0], level_range[1]), time=slice(0, len(ds.time), 6))
         df = ds_sub.to_dataframe()
         df = df.reset_index()
         # timeheighte data set must be converted to json so timeheightat it is stored as binary to be used in otimeheighter functions
@@ -32,6 +36,13 @@ def get_callbacks_timeheight(app, config):
                 Input('intermediate-ds-timeheight', 'data'))
     def timeheight_graph_update(dropdown_value, df_json):
         df = pd.read_json(df_json, orient='split')
+
+        # check if the variable is in the dataframe, if not use default error plot
+        if dropdown_value not in df.columns:
+            fig = go.Figure()
+            fig = style_error(fig)
+            return fig
+        
         fig = go.Figure(data=
                         go.Contour(z=df['{}'.format(dropdown_value)], x=df['time'], y=df['height_2'],
                                 colorscale='thermal', coloraxis='coloraxis'))

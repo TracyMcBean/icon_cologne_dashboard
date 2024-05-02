@@ -134,6 +134,12 @@ app.layout = html.Div(id='parent', children=[
                             {'label': 'Graupel mass', 'value': 'QG'},
                             {'label': 'Hail mass', 'value': 'QH'},
                             {'label': 'Total hydrometeors mass', 'value': 'total hydrometeors'},
+                            {'label': 'Cloud water number conc.', 'value': 'QNC'},
+                            {'label': 'Cloud ice number conc.', 'value': 'QNI'},
+                            {'label': 'Rain number conc.', 'value': 'QNR'},
+                            {'label': 'Snow number conc.', 'value': 'QNS'},
+                            {'label': 'Graupel number conc.', 'value': 'QNG'},
+                            {'label': 'Hail number conc.', 'value': 'QNH'},
                         ],
                         value='QV', style={ 'color': '#0077a1'}),
             dcc.Graph(id='hydrometeors_plot')

@@ -6,7 +6,8 @@ import xarray as xr
 import pandas as pd
 import plotly.graph_objects as go
 
-from .style_functions import style_figure
+from .style_functions import style_figure, style_error
+from utils.error_utils import var_exists
 
 # This wrapping function is to avoid circular imports
 def get_callbacks_vars1d(app, config):
@@ -19,7 +20,11 @@ def get_callbacks_vars1d(app, config):
         
         ds = xr.open_dataset(
             path+'/'+ config['paths']['prefix_meteogram'] + seldate + config['paths']['postfix_meteogram']+'.nc')
-        ds_sub1d = ds[['T2M', 'P_SFC', 'TQV', 'TQC', 'TQI']]
+        
+        var_list = ['T2M', 'P_SFC', 'TQV', 'TQC', 'TQI']
+        var_list = var_exists(var_list, ds)
+
+        ds_sub1d = ds[var_list]
         df = ds_sub1d.to_dataframe()
         df = df.reset_index(col_fill='time')
         # The data set must be converted to json so that it is stored as binary to be used in other functions
@@ -31,6 +36,12 @@ def get_callbacks_vars1d(app, config):
     def graph_update_vars1d(dropdown_value, df_json):
         df = pd.read_json(df_json, orient='split')
 
+        # check if the variable is in the dataframe, if not use default error plot
+        if dropdown_value not in df.columns:
+            fig = go.Figure()
+            fig = style_error(fig)
+            return fig
+        
         fig = go.Figure([go.Scatter(x=df['time'], y=df['{}'.format(dropdown_value)],
             line=dict(color='firebrick', width=3))
             ])
