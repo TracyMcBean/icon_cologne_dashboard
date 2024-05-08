@@ -41,12 +41,15 @@ def get_callbacks_hydrometeors(app, config):
         df = df.reset_index()
         
         # add total hydrometeor amount to the data frame
-        df['total hydrometeors'] = 0
+        df['total mass'] = 0
         for var in var_list_mass:
-            df['total hydrometeors'] += df[var]
-        # TODO: add total hydrometeor number conc. to the var_list
+            df['total mass'] += df[var]
+            
+        df['total number'] = 0
+        for var in var_list_number:
+            df['total number'] += df[var]
 
-        var_list_mass = var_list_mass + ['total hydrometeors']
+        var_list_mass = var_list_mass + ['total mass'] + ['total number']
         # convert data so that plotting is easier and possible also with log values
         for varname in var_list_mass:
             df.loc[df[varname] < 1e-8, varname] = -9
@@ -59,6 +62,13 @@ def get_callbacks_hydrometeors(app, config):
                 Input('dropdown_hydrometeors', 'value'),
                 Input('intermediate-ds-hydrometeors', 'data'))
     def hydrometeors_graph_update(dropdown_value, df_json):
+        """ Create hydrometeor plot and update it when the dropdown value changes
+
+        :param dropdown_value: selected dropdown value
+        :param df_json: json data set with hydrometeors
+        :return: updated hydrometeor plot
+        """
+
         df = pd.read_json(df_json, orient='split')    
         
         # check if the variable is in the dataframe, if not use default error plot
@@ -67,13 +77,16 @@ def get_callbacks_hydrometeors(app, config):
             fig = style_error(fig)
             return fig
 
+        # create contourplot
         fig = go.Figure(data=
                 go.Contour(z=df['{}'.format(dropdown_value)], x=df['time'], y=df['height_2'],
                     colorscale='jet', coloraxis='coloraxis'))
         
-        if (dropdown_value != 'QV') & (dropdown_value[1] != 'N'):  # Add a colon after the condition
-            fig.update_traces(contours=dict(start=-8, end=-2, size=1)
-                     )
+        # add log scale limits for mass
+        if (dropdown_value != 'QV') & (dropdown_value[1] != 'N') & \
+                (dropdown_value != 'total number'):
+            fig.update_traces(contours=dict(start=-8, end=-2, size=1))
+            
         # apply styling to the figure
         fig = style_figure(fig)
         fig.update_layout(title='',
@@ -81,7 +94,9 @@ def get_callbacks_hydrometeors(app, config):
                             yaxis_title='Height [m]'
                             )
         
-        if (dropdown_value != 'QV') & (dropdown_value[1] != 'N'):
+        # update settings for colorbar
+        if (dropdown_value != 'QV') & (dropdown_value[1] != 'N') & \
+            (dropdown_value != 'total number'):
             fig.update_layout(
                 coloraxis_colorbar=dict(
                     title='log10 [kg/kg]',
@@ -91,6 +106,12 @@ def get_callbacks_hydrometeors(app, config):
             fig.update_layout(
                 coloraxis_colorbar=dict(
                     title='[kg/kg]',
+                    ),
+                )
+        else:
+            fig.update_layout(
+                coloraxis_colorbar=dict(
+                    title='1/kg',
                     ),
                 )
             

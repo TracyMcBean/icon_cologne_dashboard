@@ -45,7 +45,7 @@ def get_callbacks_timeheight(app, config):
         
         fig = go.Figure(data=
                         go.Contour(z=df['{}'.format(dropdown_value)], x=df['time'], y=df['height_2'],
-                                colorscale='thermal', coloraxis='coloraxis'))
+                                colorscale='viridis_r', colorbar=dict(title='')))
         
         # apply styling to the figure
         fig = style_figure(fig)
@@ -56,15 +56,22 @@ def get_callbacks_timeheight(app, config):
         # loop over all possible variables and set the colorbar title accordingly
         dropdown_values = ['CLC', 'T', 'RHO', 'P', 'REL_HUM',
                            'U', 'V']
-        cbar_titles = ['0 or 1', 'Temperature [K]', 'Density [kg/m^3]', 'Pressure [Pa]',
-                       'Relative Humidity [%]', 'U-Component [m/s]', 'V-Component [m/s]']
+        cbar_titles = ['0 or 1', 'T [K]', 'Rho [kg/m^3]', 'P [Pa]',
+                       ' Rel. hum. [%]', 'U [m/s]', 'V [m/s]']
         for dv, ct in zip(dropdown_values, cbar_titles):
             if dropdown_value == dv:
-                fig.update_layout(
-                    coloraxis_colorbar=dict(
+                fig.update_traces(
+                    colorbar=dict(
                         title=ct,
                         ),
                 )
+        if dropdown_value == 'T':
+            #update colorscale for temperature
+            fig.update_traces(colorscale="Turbo", selector=dict(type='contour'))
+        if dropdown_value in ['U', 'V']:
+            #update colorscale for wind, center around 0
+            fig.update_traces(colorscale="PRGn", selector=dict(type='contour'),
+                              zmid=0)
         
         return fig
 

@@ -82,8 +82,8 @@ app.layout = html.Div(id='parent', children=[
                     value='T2M', style={ 'color': '#0077a1'}),
             # add a button to select if logarithmic scale should be used
             dcc.Graph(id='line_plot')            
-            ], style={'width': '40%', 'display': 'inline-block', 'margin-right': '4%',
-                      'vertical-align': 'top', 'padding': '10px', 'padding-left': '20px'}
+            ], style={'width': '45%', 'display': 'inline-block', 'margin-right': '2%',
+                      'vertical-align': 'top', 'margin-left': '2%'}
                       # the margin creates a gap between the two columns
                       # the vertical-align aligns the bottom of the plot with the bottom of the div
         ),
@@ -91,14 +91,14 @@ app.layout = html.Div(id='parent', children=[
         html.Div(children=[
             html.H3("Precipitation"),
             dcc.Graph(id='precip_plot')],
-            style={'width': '40%', 'display': 'inline-block',  'margin-left': '4%',
-                  'vertical-align': 'top','padding': '10px'}
+            style={'width': '45%', 'display': 'inline-block',  'margin-left': '2%',
+                  'vertical-align': 'top', 'margin-right': '1%'}
         ),
     ], style={'color': text_color}),
 
     # three round dots in the center of the page
     html.Div(children=[
-        html.H1("• • •"),
+        html.H1("☁ ☀ ❄ ☂ ☁ "),
     ], style={'text-align': 'center', 'padding': '10px', 'color': divider_color, 'letter-spacing': '20px'}),
 
     html.Div(children=[
@@ -113,13 +113,13 @@ app.layout = html.Div(id='parent', children=[
                             {'label': 'Pressure', 'value': 'P'},
                             {'label': 'Relative humidity', 'value': 'REL_HUM'},
                             {'label': 'Horizontal wind U', 'value': 'U'},
-                            {'label': 'horizontal wind V', 'value': 'V'},
+                            {'label': 'Horizontal wind V', 'value': 'V'},
                         ],
                         value='CLC', style={ 'color': '#0077a1'}),
         dcc.Graph(id='timeheight_plot'),
-        ], style={'width': '40%', 'display': 'inline-block', 'margin-right': '4%',
-                  'vertical-align': 'top', 'padding': '5px',
-                  'padding-left': '20px'}),
+        ], style={'width': '45%', 'display': 'inline-block', 'margin-right': '2%',
+                  'vertical-align': 'top', 'margin-left': '2%'
+                  }),
 
         html.Div(children=[
             html.H3("Hydrometeors"),
@@ -133,18 +133,19 @@ app.layout = html.Div(id='parent', children=[
                             {'label': 'Snow mass', 'value': 'QS'},
                             {'label': 'Graupel mass', 'value': 'QG'},
                             {'label': 'Hail mass', 'value': 'QH'},
-                            {'label': 'Total hydrometeors mass', 'value': 'total hydrometeors'},
+                            {'label': 'Total mass', 'value': 'total mass'},
                             {'label': 'Cloud water number conc.', 'value': 'QNC'},
                             {'label': 'Cloud ice number conc.', 'value': 'QNI'},
                             {'label': 'Rain number conc.', 'value': 'QNR'},
                             {'label': 'Snow number conc.', 'value': 'QNS'},
                             {'label': 'Graupel number conc.', 'value': 'QNG'},
                             {'label': 'Hail number conc.', 'value': 'QNH'},
+                            {'label': 'Total number conc.', 'value': 'total number'},
                         ],
                         value='QV', style={ 'color': '#0077a1'}),
             dcc.Graph(id='hydrometeors_plot')
-        ], style={'width': '40%', 'display': 'inline-block',  'margin-left': '4%',
-                  'padding': '5px', 'vertical-align': 'top'}
+        ], style={'width': '45%', 'display': 'inline-block',  'margin-left': '2%',
+                   'vertical-align': 'top'}
         ),
     ]),
     
