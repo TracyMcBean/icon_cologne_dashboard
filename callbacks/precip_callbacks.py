@@ -6,6 +6,7 @@ import xarray as xr
 import pandas as pd
 import plotly.express as px
 import numpy as np
+from io import StringIO
 
 from .style_functions import style_figure
 
@@ -41,7 +42,8 @@ def get_callbacks_precip(app, config):
     @app.callback(Output(component_id='precip_plot', component_property='figure'),
               Input('intermediate-ds-precip', 'data'))
     def precip_graph_update(df_json):
-        df = pd.read_json(df_json, orient='split')
+        df = pd.read_json(StringIO(df_json), orient='split')
+
         fig = px.line(df, x='time', y='values', color='name')
         fig.update_layout(title={
             'text': 'Select the precipitation type by clicking on the legend',

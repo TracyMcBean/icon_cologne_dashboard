@@ -5,6 +5,7 @@ from datetime import datetime
 import xarray as xr
 import pandas as pd
 import plotly.graph_objects as go
+from io import StringIO
 
 from .style_functions import style_figure, style_error
 from utils.error_utils import var_exists
@@ -34,7 +35,7 @@ def get_callbacks_vars1d(app, config):
                 Input(component_id='dropdown_vars1d', component_property='value'),
                 Input('intermediate-ds-vars1d', 'data'))
     def graph_update_vars1d(dropdown_value, df_json):
-        df = pd.read_json(df_json, orient='split')
+        df = pd.read_json(StringIO(df_json), orient='split')
 
         # check if the variable is in the dataframe, if not use default error plot
         if dropdown_value not in df.columns:

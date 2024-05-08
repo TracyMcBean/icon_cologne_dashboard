@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 from dash.dependencies import Input, Output
 from datetime import datetime
 import numpy as np
+from io import StringIO
 
 from .style_functions import style_figure, style_error
 from utils.error_utils import var_exists
@@ -69,7 +70,7 @@ def get_callbacks_hydrometeors(app, config):
         :return: updated hydrometeor plot
         """
 
-        df = pd.read_json(df_json, orient='split')    
+        df = pd.read_json(StringIO(df_json), orient='split')    
         
         # check if the variable is in the dataframe, if not use default error plot
         if dropdown_value not in df.columns:
