@@ -16,3 +16,8 @@ text_color = 'white'    # text color for the entire page
 
 ['data.meteogram']
 maxlev_idx = 150   # maximum level index for the meteogram
+
+[tool.pytest.ini_options]
+pythonpath = [
+    "."
+]
